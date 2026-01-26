@@ -1,10 +1,12 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
+import { LeadContext } from "../LeadContext"
 import { useLocation } from "react-router-dom"
 import axios from "axios"
 
 export default function Enquiry(){
 const location = useLocation()
 const selectedProperty = location.state?.property || ""
+const { fetchLeads } = useContext(LeadContext)
 
 const [form,setForm]=useState({
 client:"",
@@ -28,6 +30,7 @@ source:"Website"
 
 console.log("Saved:", res.data)
 
+await fetchLeads()
 alert("Thank you! We will contact you.")
 
 setForm({client:"",phone:"",property:""})
