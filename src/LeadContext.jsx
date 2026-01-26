@@ -8,8 +8,16 @@ export function LeadProvider({ children }) {
   const [leads, setLeads] = useState([])
 
   useEffect(() => {
-    fetchLeads()
+  fetchLeads()
+
+  const interval = setInterval(()=>{
+  fetchLeads()
+  },15000) // every 15 seconds
+
+  return ()=>clearInterval(interval)
+
   }, [])
+
 
 const fetchLeads = async () => {
 try{
