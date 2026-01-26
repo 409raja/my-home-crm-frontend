@@ -15,7 +15,7 @@ export function LeadProvider({ children }) {
     //const res = await axios.get("http://localhost:5000/api/leads")
     const user = JSON.parse(localStorage.getItem("user"))
 
-        const res = await axios.get("http://localhost:5000/api/leads",{
+        const res = await axios.get("https://my-home-crm-backend.onrender.com",{
         params:{
         role:user.role,
         name:user.name

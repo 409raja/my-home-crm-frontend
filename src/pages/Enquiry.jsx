@@ -17,7 +17,7 @@ const submit = async ()=>{
 console.log("Submitting form:", form)
 
 try{
-const res = await axios.post("http://localhost:5000/api/leads",{
+const res = await axios.post("https://my-home-crm-backend.onrender.com/api/leads",{
 client: form.client,
 phone: form.phone,
 property: form.property,
