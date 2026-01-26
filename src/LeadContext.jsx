@@ -11,18 +11,27 @@ export function LeadProvider({ children }) {
     fetchLeads()
   }, [])
 
-  const fetchLeads = async () => {
-    //const res = await axios.get("http://localhost:5000/api/leads")
-    const user = JSON.parse(localStorage.getItem("user"))
+const fetchLeads = async () => {
+try{
 
-        const res = await axios.get("https://my-home-crm-backend.onrender.com/api/leads",{
-        params:{
-        role:user.role,
-        name:user.name
-        }
-        })
+const user = JSON.parse(localStorage.getItem("user"))
 
-    setLeads(res.data)
+  const res = await axios.get(
+  "https://my-home-crm-backend.onrender.com/api/leads",
+  {
+  params:{
+  role:user.role,
+  name:user.name
+  }
+  }
+  )
+
+  setLeads(res.data)
+
+  }catch(err){
+  alert("Server waking up... please wait 30 seconds then refresh.")
+  console.log(err)
+  }
   }
 
   return (
