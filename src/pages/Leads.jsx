@@ -6,6 +6,11 @@ import { AuthContext } from "../AuthContext"
 import { LeadContext } from "../LeadContext"
 
 export default function Leads() {
+const [agents,setAgents] = useState([])
+useEffect(()=>{
+axios.get("https://my-home-crm-backend.onrender.com/api/auth/users")
+.then(res=>setAgents(res.data.filter(u=>u.role==="Agent")))
+},[])
 
 const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 const [selected, setSelected] = useState([])
@@ -25,15 +30,7 @@ const updateFollowup = (index, value) => {
   setLeads(copy)
   axios.put(`http://localhost:5000/api/leads/${l._id}`, copy[i])
 }
-const agents = ["Ravi","Aman","Suresh"]
-const [newLead, setNewLead] = useState({
-  client:"",
-  phone:"",
-  property:"",
-  owner:user.name,
-  status:"New",
-  source:"Manual"
-})
+
 
 const addLead = async () => {
   await axios.post("http://localhost:5000/api/leads", newLead)
@@ -102,13 +99,19 @@ Delete Selected
 <td>{l.phone}</td>
 <td>{l.property}</td>
 <td>
-<select value={l.owner} onChange={async e=>{
-const updated={...l, owner:e.target.value}
-await axios.put(`http://localhost:5000/api/leads/${l._id}`, updated)
-fetchLeads()
-}}>
-{agents.map(a=><option key={a}>{a}</option>)}
+<select
+value={l.owner}
+onChange={e=>{
+const copy=[...leads]
+copy[i].owner=e.target.value
+setLeads(copy)
+}}
+>
+{agents.map(a=>(
+<option key={a._id}>{a.name}</option>
+))}
 </select>
+
 </td>
 
 
