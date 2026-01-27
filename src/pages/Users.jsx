@@ -6,6 +6,7 @@ export default function Users(){
 
 const [form,setForm]=useState({
 name:"",
+phone:"",
 email:"",
 password:"",
 role:"Agent"
@@ -14,21 +15,39 @@ role:"Agent"
 const create = async ()=>{
 await axios.post("https://my-home-crm-backend.onrender.com/api/auth/create",form)
 alert("User created")
-setForm({name:"",email:"",password:"",role:"Agent"})
+setForm({name:"",phone:"",email:"",password:"",role:"Agent"})
 }
 
 const [users,setUsers]=useState([])
+const [allUsers,setAllUsers]=useState([])
 
-useEffect(()=>{
+useEffect(()=>{ loadUsers() },[])
+// Load users
+const loadUsers = ()=>{
 axios.get("https://my-home-crm-backend.onrender.com/api/auth/users")
-.then(res=>setUsers(res.data))
-},[])
+.then(res=>{
+setUsers(res.data)
+setAllUsers(res.data)
+})
+}
 
+// Disable
 const disableUser = async(id)=>{
 await axios.put(`https://my-home-crm-backend.onrender.com/api/auth/disable/${id}`)
 setUsers(users.map(u=>u._id===id?{...u,active:false}:u))
 }
 
+// Enable
+const enableUser = async(id)=>{
+await axios.put(`https://my-home-crm-backend.onrender.com/api/auth/enable/${id}`)
+loadUsers()
+}
+
+// Search
+const search = (txt)=>{
+setUsers(allUsers.filter(u=>u.name.toLowerCase().includes(txt.toLowerCase())))
+}
+// Delete
 const deleteUser = async(id)=>{
 if(!window.confirm("Delete user?")) return
 await axios.delete(`https://my-home-crm-backend.onrender.com/api/auth/${id}`)
@@ -42,6 +61,11 @@ return(
 <input placeholder="Name"
 value={form.name}
 onChange={e=>setForm({...form,name:e.target.value})}
+/><br/><br/>
+
+<input placeholder="Mobile No."
+value={form.phone}
+onChange={e=>setForm({...form,phone:e.target.value})}
 /><br/><br/>
 
 <input placeholder="Email"
@@ -61,45 +85,54 @@ onChange={e=>setForm({...form,role:e.target.value})}
 <option>Agent</option>
 <option>Manager</option>
 <option>Accountant</option>
+<option>Owner</option>
 </select><br/><br/>
-
 <button onClick={create}>Create User</button>
 
 <h2>Employees</h2>
 
-<input placeholder="Search employee..." onChange={e=>{
-setUsers(users.filter(u=>u.name.toLowerCase().includes(e.target.value.toLowerCase())))
-}}/>
+<input 
+placeholder="Search employee..." 
+onChange={e=>{
+setUsers(users.filter(u=>u.name.toLowerCase().includes(e.target.value.toLowerCase())))}}
+style={{marginBottom:15}}
+/>
+
 
 <table width="100%" border="1" cellPadding="10">
 <thead>
 <tr>
-<th>Name</th>
-<th>Email</th>
-<th>Role</th>
-<th>Action</th>
-<th>Emp ID</th>
-<th>Joined</th>
-
+    <th>Emp ID</th>
+    <th>Name</th>
+    <th>Mobile No.</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Joining Date</th>
+    <th>Action</th>
+    <th>Status</th>
 </tr>
 </thead>
 
 <tbody>
-{users.map(u=>(
+{users.map(u=>(  
 <tr key={u._id}>
-<td>{u.name}</td>
-<td>{u.email}</td>
-<td>{u.role}</td>
-<td>
-<button onClick={()=>deleteUser(u._id)}>Delete</button>
-</td>
-<td>{u.empId}</td>
-<td>{new Date(u.createdAt).toLocaleDateString()}</td>
-<td>
-{u.active ? (
-<button onClick={()=>disableUser(u._id)}>Disable</button>
-) : "Disabled"}
-</td>
+    <td>{u.empId}</td>
+    <td>{u.name}</td>
+    <td>{u.phone}</td>
+    <td>{u.email}</td>
+    <td>{u.role}</td>
+    <td>{new Date(u.createdAt).toLocaleDateString()}</td>
+    <td>
+    <button onClick={()=>deleteUser(u._id)}>Delete</button>
+    </td>
+
+    <td>
+    {u.active ? (
+    <button onClick={()=>disableUser(u._id)}>Disable</button>
+    ) : (
+    <button onClick={()=>enableUser(u._id)}>Enable</button>
+    )}
+    </td>
 
 </tr>
 ))}
