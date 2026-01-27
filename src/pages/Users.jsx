@@ -50,9 +50,13 @@ const search = (txt)=>{
 if(txt===""){
 setUsers(allUsers)
 }else{
-setUsers(allUsers.filter(u=>u.name.toLowerCase().includes(txt.toLowerCase())))
+setUsers(allUsers.filter(u =>
+u.name.toLowerCase().includes(txt.toLowerCase()) ||
+u.phone.includes(txt)
+))
 }
 }
+
 
 // Delete
 const deleteUser = async(id)=>{
