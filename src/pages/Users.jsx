@@ -21,17 +21,15 @@ setForm({name:"",phone:"",email:"",password:"",role:"Agent"})
 }
 
 const [users,setUsers]=useState([])
-const [allUsers,setAllUsers]=useState([])
+const [query,setQuery]=useState("")
 
 useEffect(()=>{ loadUsers() },[])
 // Load users
 const loadUsers = ()=>{
 axios.get("https://my-home-crm-backend.onrender.com/api/auth/users")
-.then(res=>{
-setUsers(res.data)
-setAllUsers(res.data)
-})
+.then(res=>setUsers(res.data))
 }
+
 
 // Disable
 const disableUser = async(id)=>{
@@ -108,11 +106,11 @@ onChange={e=>setForm({...form,role:e.target.value})}
 
 <h2>Employees</h2>
 
-<input 
-placeholder="Search employee..." 
-onChange={e=>{
-setUsers(users.filter(u=>u.name.toLowerCase().includes(e.target.value.toLowerCase())))}}
-style={{marginBottom:10}}
+<input
+placeholder="Search employee..."
+value={query}
+onChange={e=>setQuery(e.target.value)}
+style={{marginBottom:15}}
 />
 
 
@@ -131,7 +129,12 @@ style={{marginBottom:10}}
 </thead>
 
 <tbody>
-{users.map(u=>(  
+{users
+.filter(u =>
+u.name.toLowerCase().includes(query.toLowerCase()) ||
+u.phone.includes(query)
+)
+.map(u=>(  
 <tr key={u._id}>
     <td>{u.empId}</td>
     <td>{u.name}</td>
