@@ -13,7 +13,9 @@ role:"Agent"
 })
 
 const create = async ()=>{
-await axios.post("https://my-home-crm-backend.onrender.com/api/auth/create",form)
+await axios.post("https://my-home-crm-backend.onrender.com/api/auth/create",{ ...form,
+    phone:"+91"+form.phone
+})
 alert("User created")
 setForm({name:"",phone:"",email:"",password:"",role:"Agent"})
 }
@@ -45,8 +47,13 @@ loadUsers()
 
 // Search
 const search = (txt)=>{
+if(txt===""){
+setUsers(allUsers)
+}else{
 setUsers(allUsers.filter(u=>u.name.toLowerCase().includes(txt.toLowerCase())))
 }
+}
+
 // Delete
 const deleteUser = async(id)=>{
 if(!window.confirm("Delete user?")) return
@@ -63,9 +70,15 @@ value={form.name}
 onChange={e=>setForm({...form,name:e.target.value})}
 /><br/><br/>
 
-<input placeholder="Mobile No."
-value={form.phone}
-onChange={e=>setForm({...form,phone:e.target.value})}
+<input
+placeholder="Mobile (10 digits)"
+maxLength="10"
+onChange={e=>{
+const v=e.target.value.replace(/\D/g,"")
+if(v.length<=10){
+setForm({...form,phone:v})
+}
+}}
 /><br/><br/>
 
 <input placeholder="Email"
@@ -95,7 +108,7 @@ onChange={e=>setForm({...form,role:e.target.value})}
 placeholder="Search employee..." 
 onChange={e=>{
 setUsers(users.filter(u=>u.name.toLowerCase().includes(e.target.value.toLowerCase())))}}
-style={{marginBottom:15}}
+style={{marginBottom:10}}
 />
 
 
