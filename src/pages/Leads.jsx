@@ -19,12 +19,17 @@ useEffect(() => {
 const { user } = useContext(AuthContext)
 const { leads, setLeads, fetchLeads } = useContext(LeadContext)
 
-const updateFollowup = (index, value) => {
-  const copy = [...leads]
-  copy[index].followup = value
-  setLeads(copy)
-  axios.put(`http://localhost:5000/api/leads/${l._id}`, copy[i])
+const updateFollowup = async (index,value)=>{
+const copy=[...leads]
+copy[index].followup=value
+setLeads(copy)
+
+await axios.put(
+`https://my-home-crm-backend.onrender.com/api/leads/${copy[index]._id}`,
+copy[index]
+)
 }
+
 const [agents,setAgents] = useState([])
 const [newLead, setNewLead] = useState({
   client:"",
@@ -40,7 +45,7 @@ axios.get("https://my-home-crm-backend.onrender.com/api/auth/users")
 },[])
 
 const addLead = async () => {
-  await axios.post("http://localhost:5000/api/leads", newLead)
+  await axios.post("https://my-home-crm-backend.onrender.com/api/leads", newLead)
   fetchLeads()
 }
 
@@ -71,8 +76,12 @@ Delete Selected
 <input placeholder="Phone" onChange={e=>setNewLead({...newLead,phone:e.target.value})}/>
 <input placeholder="Property" onChange={e=>setNewLead({...newLead,property:e.target.value})}/>
 <select onChange={e=>setNewLead({...newLead,owner:e.target.value})}>
-{agents.map(a=><option key={a}>{a}</option>)}
+{agents.map(a=>(
+<option key={a._id} value={a.name}>{a.name}</option>
+))}
 </select>
+
+
 
 <button onClick={addLead}>Add Lead</button>
 </div>
