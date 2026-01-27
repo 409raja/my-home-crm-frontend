@@ -48,7 +48,8 @@ const search = (txt)=>{
 if(txt===""){
 setUsers(allUsers)
 }else{
-setUsers(allUsers.filter(u =>
+setUsers(allUsers
+.filter(u =>
 u.name.toLowerCase().includes(txt.toLowerCase()) ||
 u.phone.includes(txt)
 ))
@@ -131,8 +132,8 @@ style={{marginBottom:15}}
 <tbody>
 {users
 .filter(u =>
-u.name.toLowerCase().includes(query.toLowerCase()) ||
-u.phone.includes(query)
+(u.name || "").toLowerCase().includes(query.toLowerCase()) ||
+(u.phone || "").includes(query)
 )
 .map(u=>(  
 <tr key={u._id}>
