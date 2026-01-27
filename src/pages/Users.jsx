@@ -24,6 +24,11 @@ axios.get("https://my-home-crm-backend.onrender.com/api/auth/users")
 .then(res=>setUsers(res.data))
 },[])
 
+const disableUser = async(id)=>{
+await axios.put(`https://my-home-crm-backend.onrender.com/api/auth/disable/${id}`)
+setUsers(users.map(u=>u._id===id?{...u,active:false}:u))
+}
+
 const deleteUser = async(id)=>{
 if(!window.confirm("Delete user?")) return
 await axios.delete(`https://my-home-crm-backend.onrender.com/api/auth/${id}`)
@@ -62,6 +67,10 @@ onChange={e=>setForm({...form,role:e.target.value})}
 
 <h2>Employees</h2>
 
+<input placeholder="Search employee..." onChange={e=>{
+setUsers(users.filter(u=>u.name.toLowerCase().includes(e.target.value.toLowerCase())))
+}}/>
+
 <table width="100%" border="1" cellPadding="10">
 <thead>
 <tr>
@@ -69,6 +78,9 @@ onChange={e=>setForm({...form,role:e.target.value})}
 <th>Email</th>
 <th>Role</th>
 <th>Action</th>
+<th>Emp ID</th>
+<th>Joined</th>
+
 </tr>
 </thead>
 
@@ -81,6 +93,14 @@ onChange={e=>setForm({...form,role:e.target.value})}
 <td>
 <button onClick={()=>deleteUser(u._id)}>Delete</button>
 </td>
+<td>{u.empId}</td>
+<td>{new Date(u.createdAt).toLocaleDateString()}</td>
+<td>
+{u.active ? (
+<button onClick={()=>disableUser(u._id)}>Disable</button>
+) : "Disabled"}
+</td>
+
 </tr>
 ))}
 </tbody>
