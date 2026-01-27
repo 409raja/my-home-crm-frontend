@@ -12,6 +12,7 @@ import Accountant from "./pages/Accountant"
 import { Routes, Route } from "react-router-dom"
 import { LeadContext } from "./LeadContext"
 import Enquiry from "./pages/Enquiry"
+import Users from "./pages/Users"
 
 
 function App() {
@@ -81,6 +82,7 @@ const today = new Date().toLocaleDateString("en-CA")
           <Route path="/leads" element={<Leads />} />
           <Route path="/properties" element={<Properties />} />
           <Route path="/enquiry" element={<Enquiry/>}/>
+          <Route path="/users" element={<Users/>}/>
         </Routes>
 
       </div>
