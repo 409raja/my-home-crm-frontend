@@ -47,7 +47,10 @@ const [newLead, setNewLead] = useState({
 })
 useEffect(()=>{
 axios.get("https://my-home-crm-backend.onrender.com/api/auth/users")
-.then(res=>setAgents(res.data.filter(u=>u.role==="Agent")))
+.then(res=>{
+if(res.data) setAgents(res.data.filter(u=>u.role==="Agent"))
+})
+
 },[])
 
 const addLead = async () => {
@@ -97,8 +100,12 @@ onChange={e=>setNewLead({...newLead,owner:e.target.value})}
 >
 
 {agents.map(a=>(
-<option key={a._id} value={a.name}>{a.name}</option>
-))}
+<option key={a._id} value={a.name}>
+{a.name}
+</option>
+))
+}
+
 </select>
 
 
