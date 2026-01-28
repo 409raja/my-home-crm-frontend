@@ -23,6 +23,11 @@ useEffect(() => {
 
 
 const { user } = useContext(AuthContext)
+
+if(!user){
+return <div style={{padding:40}}>Please login again.</div>
+}
+
 const { leads, setLeads, fetchLeads } = useContext(LeadContext)
 
 const updateFollowup = async (index,value)=>{
@@ -38,13 +43,14 @@ copy[index]
 const [openNote,setOpenNote] = useState(null)
 const [agents,setAgents] = useState([])
 const [newLead, setNewLead] = useState({
-  client:"",
-  phone:"",
-  property:"",
-  owner:user.name,
-  status:"New",
-  source:"Manual"
+client:"",
+phone:"",
+property:"",
+owner:user?.name || "",
+status:"New",
+source:"Manual"
 })
+
 useEffect(()=>{
 axios.get("https://my-home-crm-backend.onrender.com/api/auth/users")
 .then(res=>{
