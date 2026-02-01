@@ -42,11 +42,10 @@ copy[index]
 }
 const [openNote,setOpenNote] = useState(null)
 const [agents,setAgents] = useState([])
-const [newLead, setNewLead] = useState({
+const [newLead,setNewLead]=useState({
 client:"",
 phone:"",
 property:"",
-owner:user?.name || "",
 status:"New",
 source:"Manual"
 })

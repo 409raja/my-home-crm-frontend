@@ -19,14 +19,14 @@ const submit = async ()=>{
 console.log("Submitting form:", form)
 
 try{
-const res = await axios.post("https://my-home-crm-backend.onrender.com/api/leads",{
+await axios.post("https://my-home-crm-backend.onrender.com/api/leads",{
 client: form.client,
 phone: form.phone,
 property: form.property,
-owner:"Website",
 status:"New",
 source:"Website"
 })
+
 
 console.log("Saved:", res.data)
 
