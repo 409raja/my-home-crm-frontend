@@ -65,7 +65,6 @@ setNewLead({
 client:"",
 phone:"",
 property:"",
-owner:user.name,
 status:"New",
 source:"Manual"
 })
