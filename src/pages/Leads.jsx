@@ -98,20 +98,6 @@ Delete Selected
 <input placeholder="Client" onChange={e=>setNewLead({...newLead,client:e.target.value})}/>
 <input placeholder="Phone" onChange={e=>setNewLead({...newLead,phone:e.target.value})}/>
 <input placeholder="Property" onChange={e=>setNewLead({...newLead,property:e.target.value})}/>
-<select
-value={newLead.owner}
-onChange={e=>setNewLead({...newLead,owner:e.target.value})}
->
-
-{agents.map(a=>(
-<option key={a._id} value={a.name}>
-{a.name}
-</option>
-))
-}
-
-</select>
-
 
 
 <button onClick={addLead}>Add Lead</button>
