@@ -24,23 +24,25 @@ try{
 
 const user = JSON.parse(localStorage.getItem("user"))
 
-  const res = await axios.get(
-  "https://my-home-crm-backend.onrender.com/api/leads",
-  {
-  params:{
-  role:user.role,
-  name:user.name
-  }
-  }
-  )
+if(!user) return
 
-  setLeads(res.data)
+const res = await axios.get(
+"https://my-home-crm-backend.onrender.com/api/leads",
+{
+params:{
+role:user.role,
+name:user.name
+}
+}
+)
 
-  }catch(err){
-  alert("Server waking up... please wait 30 seconds then refresh.")
-  console.log(err)
-  }
-  }
+setLeads(res.data)
+
+}catch(err){
+console.log("Server waking up...", err.message)
+}
+}
+
 
   return (
     <LeadContext.Provider value={{ leads, setLeads, fetchLeads }}>
