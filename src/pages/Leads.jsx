@@ -46,6 +46,7 @@ const [newLead,setNewLead]=useState({
 client:"",
 phone:"",
 property:"",
+owner:"",
 status:"New",
 source:"Manual"
 })
@@ -65,6 +66,7 @@ setNewLead({
 client:"",
 phone:"",
 property:"",
+owner:"",
 status:"New",
 source:"Manual"
 })
@@ -95,9 +97,23 @@ Delete Selected
 
 
 <div style={{marginBottom:20}}>
-<input placeholder="Client" onChange={e=>setNewLead({...newLead,client:e.target.value})}/>
-<input placeholder="Phone" onChange={e=>setNewLead({...newLead,phone:e.target.value})}/>
-<input placeholder="Property" onChange={e=>setNewLead({...newLead,property:e.target.value})}/>
+<input
+placeholder="Client"
+value={newLead.client}
+onChange={e=>setNewLead({...newLead,client:e.target.value})}
+/>
+
+<input
+placeholder="Phone"
+value={newLead.phone}
+onChange={e=>setNewLead({...newLead,phone:e.target.value})}
+/>
+
+<input
+placeholder="Property"
+value={newLead.property}
+onChange={e=>setNewLead({...newLead,property:e.target.value})}
+/>
 
 
 <button onClick={addLead}>Add Lead</button>
