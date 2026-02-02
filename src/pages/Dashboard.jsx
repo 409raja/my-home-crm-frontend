@@ -1,37 +1,43 @@
-
-
 import { useContext } from "react"
 import { LeadContext } from "../LeadContext"
 import StatCard from "../components/StatCard"
 import { AuthContext } from "../AuthContext"
 
 export default function Dashboard() {
-const { user } = useContext(AuthContext)
-
+  const { user } = useContext(AuthContext)
   const { leads } = useContext(LeadContext)
 
   const today = new Date().toLocaleDateString("en-CA")
 
   const todayLeads = leads.filter(l => l.followup === today)
-    const pendingLeads = leads.filter(
-    l => l.followup && l.followup < today && l.status !== "Closed" && l.status !== "Lost"
-    )
+
+  const pendingLeads = leads.filter(
+    l =>
+      l.followup &&
+      l.followup < today &&
+      l.status !== "Closed" &&
+      l.status !== "Lost"
+  )
 
   const closedLeads = leads.filter(l => l.status === "Closed")
-  const totalRevenue = closedLeads.reduce((sum, l) => sum + (l.amount || 0), 0)
+  const totalRevenue = closedLeads.reduce(
+    (sum, l) => sum + (l.amount || 0),
+    0
+  )
 
   const sources = {}
   const agents = {}
 
   leads.forEach(l => {
-
-    // Sources
+    // ---------- SOURCES ----------
     if (!sources[l.source]) sources[l.source] = 0
     sources[l.source]++
 
-    // Agents
-    if (!agents[l.owner]) {
-      agents[l.owner] = {
+    // ---------- AGENTS ----------
+    const agentName = l.owner?.name || "Unassigned"
+
+    if (!agents[agentName]) {
+      agents[agentName] = {
         total: 0,
         followup: 0,
         closed: 0,
@@ -40,34 +46,38 @@ const { user } = useContext(AuthContext)
       }
     }
 
-    agents[l.owner].total++
+    agents[agentName].total++
 
-    if (l.followup === today) agents[l.owner].followup++
-
-    if (l.status === "Closed") {
-      agents[l.owner].closed++
-      agents[l.owner].revenue += l.amount || 0
+    if (l.followup === today) {
+      agents[agentName].followup++
     }
 
-    if (l.status === "Lost") agents[l.owner].lost++
+    if (l.status === "Closed") {
+      agents[agentName].closed++
+      agents[agentName].revenue += l.amount || 0
+    }
+
+    if (l.status === "Lost") {
+      agents[agentName].lost++
+    }
   })
 
   const conversion =
-    leads.length === 0 ? 0 : Math.round((closedLeads.length / leads.length) * 100)
+    leads.length === 0
+      ? 0
+      : Math.round((closedLeads.length / leads.length) * 100)
 
   return (
     <div style={{ padding: 20 }}>
-
       <div style={{ display: "flex", gap: 20 }}>
         <StatCard title="Total Leads" value={leads.length} />
         <StatCard title="Today Follow-ups" value={todayLeads.length} />
         <StatCard title="Closed Deals" value={closedLeads.length} />
         <StatCard title="Conversion %" value={`${conversion}%`} />
-        {user.role === "Owner" && (
-            <StatCard title="Total Revenue" value={`₹${totalRevenue}`} />
-        )
-        }
 
+        {user.role === "Owner" && (
+          <StatCard title="Total Revenue" value={`₹${totalRevenue}`} />
+        )}
       </div>
 
       <h3 style={{ marginTop: 30 }}>🔔 Today Follow-ups</h3>
@@ -75,29 +85,37 @@ const { user } = useContext(AuthContext)
       {todayLeads.length === 0 && <p>No follow-ups today.</p>}
 
       {todayLeads.map((l, i) => (
-        <div key={i} style={{ background:"#fff3cd", padding:10, marginBottom:10 }}>
-          {l.client} – {l.property} (Agent: {l.owner})
+        <div
+          key={i}
+          style={{ background: "#fff3cd", padding: 10, marginBottom: 10 }}
+        >
+          {l.client} – {l.property} (Agent: {l.owner?.name || "Unassigned"})
         </div>
       ))}
 
-        {(user.role === "Owner" || user.role === "Manager") && (
+      {(user.role === "Owner" || user.role === "Manager") && (
         <>
-            <h3 style={{ marginTop: 30, color: "red" }}>⏳ Pending Follow-ups</h3>
+          <h3 style={{ marginTop: 30, color: "red" }}>
+            ⏳ Pending Follow-ups
+          </h3>
 
-            {pendingLeads.length === 0 && <p>No pending follow-ups 🎉</p>}
+          {pendingLeads.length === 0 && <p>No pending follow-ups 🎉</p>}
 
-            {pendingLeads.map((l, i) => (
-            <div key={i} style={{
-                background:"#f8d7da",
-                padding:10,
-                marginBottom:10
-            }}>
-                {l.client} – {l.property} (Agent: {l.owner}) | Due: {l.followup}
+          {pendingLeads.map((l, i) => (
+            <div
+              key={i}
+              style={{
+                background: "#f8d7da",
+                padding: 10,
+                marginBottom: 10
+              }}
+            >
+              {l.client} – {l.property} (Agent:{" "}
+              {l.owner?.name || "Unassigned"}) | Due: {l.followup}
             </div>
-            ))}
+          ))}
         </>
-        )}
-
+      )}
 
       <h3 style={{ marginTop: 40 }}>👥 Agent Performance</h3>
 
@@ -146,7 +164,6 @@ const { user } = useContext(AuthContext)
           ))}
         </tbody>
       </table>
-
     </div>
   )
 }

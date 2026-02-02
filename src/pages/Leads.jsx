@@ -46,7 +46,6 @@ const [newLead,setNewLead]=useState({
 client:"",
 phone:"",
 property:"",
-owner:"",
 status:"New",
 source:"Manual"
 })
@@ -66,7 +65,6 @@ setNewLead({
 client:"",
 phone:"",
 property:"",
-owner:"",
 status:"New",
 source:"Manual"
 })
@@ -148,27 +146,8 @@ onChange={e=>setNewLead({...newLead,property:e.target.value})}
 <td>{l.phone}</td>
 <td>{l.property}</td>
 <td>
-<select
-value={l.owner}
-onChange={async e=>{
-const copy=[...leads]
-copy[i].owner=e.target.value
-setLeads(copy)
-
-await axios.put(
-`https://my-home-crm-backend.onrender.com/api/leads/${l._id}`,
-copy[i]
-)
-}}
-
->
-{agents.map(a=>(
-<option key={a._id}>{a.name}</option>
-))}
-</select>
-
+  {l.owner?.name || "Unassigned"}
 </td>
-
 
 
 <td>
@@ -242,7 +221,10 @@ prev.includes(l._id)
 
 {/* MOBILE CARDS */}
 {isMobile && leads
-.filter(l => user.role === "Owner" || l.owner === user.name)
+.filter(l =>
+  user.role === "Owner" || l.owner?._id === user._id
+)
+
 .map((l,i)=>(
 <div key={i} style={{
 border:"1px solid #ccc",
@@ -264,7 +246,7 @@ phone:
 <br/>
 
 Property: {l.property}<br/>
-Agent: {l.owner}<br/>
+Agent: {l.owner?.name}<br/>
 Source: {l.source}<br/><br/>
 
 Status:

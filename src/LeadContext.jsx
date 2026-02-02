@@ -30,9 +30,10 @@ const res = await axios.get(
 "https://my-home-crm-backend.onrender.com/api/leads",
 {
 params:{
-role:user.role,
-name:user.name
+  role:user.role,
+  userId:user._id
 }
+
 }
 )
 

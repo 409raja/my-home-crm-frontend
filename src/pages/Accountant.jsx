@@ -31,7 +31,7 @@ export default function Accountant() {
             <tr key={i}>
               <td>{l.client}</td>
               <td>{l.property}</td>
-              <td>{l.owner}</td>
+              <td>{l.owner?.name}</td>
               <td>₹{l.amount}</td>
             </tr>
           ))}
